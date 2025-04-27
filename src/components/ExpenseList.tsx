@@ -104,7 +104,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete, onEdit })
                   <TableRow key={expense.id} className="hover:bg-muted/50">
                     <TableCell className="font-medium">{expense.description}</TableCell>
                     <TableCell>{expense.category}</TableCell>
-                    <TableCell>${expense.amount.toFixed(2)}</TableCell>
+                    <TableCell>${typeof expense.amount === 'number' ? expense.amount.toFixed(2) : Number(expense.amount).toFixed(2)}</TableCell>
                     <TableCell>{format(parseISO(expense.date), 'MMM dd, yyyy')}</TableCell>
                     <TableCell className="text-right space-x-2">
                       <Button

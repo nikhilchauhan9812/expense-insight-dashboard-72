@@ -99,13 +99,15 @@ export const saveExpensesToStorage = (expenses: Expense[]): void => {
 // Calculate expenses by category
 export const calculateExpensesByCategory = (expenses: Expense[]): { name: string; value: number }[] => {
   const categorySums = expenses.reduce((acc, expense) => {
-    acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+    // Ensure expense.amount is a number
+    const amount = typeof expense.amount === 'number' ? expense.amount : Number(expense.amount);
+    acc[expense.category] = (acc[expense.category] || 0) + amount;
     return acc;
   }, {} as Record<string, number>);
 
   return Object.entries(categorySums).map(([name, value]) => ({
     name,
-    value: Number(value.toFixed(2))
+    value: typeof value === 'number' ? Number(value.toFixed(2)) : 0
   }));
 };
 
@@ -121,14 +123,16 @@ export const calculateExpensesByMonth = (expenses: Expense[]): { name: string; v
       monthlyExpenses[monthYear] = 0;
     }
     
-    monthlyExpenses[monthYear] += expense.amount;
+    // Ensure expense.amount is a number
+    const amount = typeof expense.amount === 'number' ? expense.amount : Number(expense.amount);
+    monthlyExpenses[monthYear] += amount;
   });
 
   // Convert to array and sort by date
   return Object.entries(monthlyExpenses)
     .map(([name, value]) => ({
       name,
-      value: Number(value.toFixed(2))
+      value: typeof value === 'number' ? Number(value.toFixed(2)) : 0
     }))
     .sort((a, b) => {
       const dateA = new Date(a.name);
@@ -139,7 +143,13 @@ export const calculateExpensesByMonth = (expenses: Expense[]): { name: string; v
 
 // Get total expenses
 export const getTotalExpenses = (expenses: Expense[]): number => {
-  return Number(expenses.reduce((total, expense) => total + expense.amount, 0).toFixed(2));
+  const total = expenses.reduce((total, expense) => {
+    // Ensure expense.amount is a number
+    const amount = typeof expense.amount === 'number' ? expense.amount : Number(expense.amount);
+    return total + amount;
+  }, 0);
+  
+  return Number(total.toFixed(2));
 };
 
 // Generate a new unique ID
